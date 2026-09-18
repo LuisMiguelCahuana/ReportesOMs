@@ -1029,6 +1029,7 @@ render_html(
 
 fig_comparativo = go.Figure()
 
+
 fig_comparativo.add_trace(
     go.Bar(
 
@@ -1061,7 +1062,7 @@ fig_comparativo.add_trace(
             ],
 
             line=dict(
-                width=0
+            width=0
             )
         ),
 
@@ -1078,40 +1079,101 @@ fig_comparativo.update_layout(
 
     height=410,
 
-    paper_bgcolor="rgba(0,0,0,0)",
-    plot_bgcolor="rgba(0,0,0,0)",
+    # ========================================================
+    # FONDO FIJO CLARO
+    # No depende del modo oscuro del navegador
+    # ========================================================
+
+    paper_bgcolor="#ffffff",
+    plot_bgcolor="#ffffff",
 
     margin=dict(
-        l=20,
-        r=20,
+        l=25,
+        r=25,
         t=35,
-        b=45
+        b=55
     ),
 
     showlegend=False,
 
+    hovermode="closest",
+
+    # ========================================================
+    # BLOQUEAR SELECCIÓN / ZOOM / MOVIMIENTO
+    # ========================================================
+
+    clickmode="none",
+
+    dragmode=False,
+
+    uirevision="dashboard",
+
+    # ========================================================
+    # EJE Y
+    # ========================================================
+
     yaxis=dict(
-        title="Monto (S/)",
-        gridcolor="rgba(75,85,99,.12)",
-        zeroline=False
+
+        title=dict(
+            text="Monto (S/)",
+            font=dict(
+                color="#374151",
+                size=13
+            )
+        ),
+
+        tickfont=dict(
+            color="#374151",
+            size=11
+        ),
+
+        gridcolor="#e5e7eb",
+
+        zeroline=False,
+
+        fixedrange=True
     ),
 
+    # ========================================================
+    # EJE X
+    # ========================================================
+
     xaxis=dict(
-        showgrid=False
+
+        showgrid=False,
+
+        tickfont=dict(
+            color="#111827",
+            size=12
+        ),
+
+        fixedrange=True
+    ),
+
+    # ========================================================
+    # FUENTE GENERAL DEL GRÁFICO
+    # ========================================================
+
+    font=dict(
+        family="Arial, sans-serif",
+        color="#111827"
     )
 )
 
+
 st.plotly_chart(
     fig_comparativo,
+
     use_container_width=True,
+
     key="grafico_produccion_capacidad",
+
     config={
         "displayModeBar": False,
         "responsive": True,
         "scrollZoom": False,
         "doubleClick": False,
-        "showTips": True,
-        "staticPlot": True
+        "editable": False
     }
 )
 # ============================================================
