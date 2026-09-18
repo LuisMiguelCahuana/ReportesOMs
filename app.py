@@ -1050,7 +1050,7 @@ fig_comparativo.add_trace(
         textposition="outside",
 
         textfont=dict(
-            color="#333333",
+            color="#111827",
             size=14
         ),
 
