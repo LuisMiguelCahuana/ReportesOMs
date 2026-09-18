@@ -1216,7 +1216,7 @@ if not data.empty:
     # COLORES DIFERENTES
     # --------------------------------------------------------
 
-    colores_unidad = [
+    colores_unidad_base = [
         "#2563eb",
         "#10b981",
         "#f59e0b",
@@ -1232,8 +1232,8 @@ if not data.empty:
     ]
 
     colores_unidad = [
-        colores_unidad[
-            i % len(colores_unidad)
+        colores_unidad_base[
+            i % len(colores_unidad_base)
         ]
         for i in range(
             len(unidad_data)
@@ -1267,7 +1267,7 @@ if not data.empty:
             textposition="outside",
 
             textfont=dict(
-                color="#333333",
+                color="#111827",
                 size=13
             ),
 
@@ -1289,19 +1289,61 @@ if not data.empty:
 
     fig_unidad.update_layout(
 
+        # ----------------------------------------------------
+        # TAMAÑO
+        # ----------------------------------------------------
+
         height=460,
 
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        # ----------------------------------------------------
+        # FONDO FIJO BLANCO
+        # No depende del modo oscuro del navegador
+        # ----------------------------------------------------
+
+        paper_bgcolor="#ffffff",
+
+        plot_bgcolor="#ffffff",
+
+        # ----------------------------------------------------
+        # MÁRGENES
+        # ----------------------------------------------------
 
         margin=dict(
-            l=20,
-            r=20,
+            l=25,
+            r=25,
             t=45,
             b=100
         ),
 
         showlegend=False,
+
+        # ----------------------------------------------------
+        # HOVER
+        # ----------------------------------------------------
+
+        hovermode="closest",
+
+        # ----------------------------------------------------
+        # BLOQUEAR SELECCIÓN
+        # ----------------------------------------------------
+
+        clickmode="none",
+
+        # ----------------------------------------------------
+        # BLOQUEAR MOVIMIENTO / ZOOM
+        # ----------------------------------------------------
+
+        dragmode=False,
+
+        # ----------------------------------------------------
+        # MANTENER ESTADO
+        # ----------------------------------------------------
+
+        uirevision="dashboard",
+
+        # ----------------------------------------------------
+        # EJE X
+        # ----------------------------------------------------
 
         xaxis=dict(
 
@@ -1311,39 +1353,75 @@ if not data.empty:
 
             tickfont=dict(
                 size=12,
-                color="#374151"
+                color="#111827"
             ),
 
             title=dict(
                 text="UNIDAD",
+
                 font=dict(
                     size=13,
-                    color="#6b7280"
+                    color="#374151"
                 )
-            )
+            ),
+
+            fixedrange=True
         ),
+
+        # ----------------------------------------------------
+        # EJE Y
+        # ----------------------------------------------------
 
         yaxis=dict(
 
-            title="Monto (S/)",
+            title=dict(
+                text="Monto (S/)",
 
-            gridcolor="rgba(75,85,99,.12)",
+                font=dict(
+                    size=13,
+                    color="#374151"
+                )
+            ),
 
-            zeroline=False
+            tickfont=dict(
+                size=11,
+                color="#374151"
+            ),
+
+            gridcolor="#e5e7eb",
+
+            zeroline=False,
+
+            fixedrange=True
+        ),
+
+        # ----------------------------------------------------
+        # FUENTE
+        # ----------------------------------------------------
+
+        font=dict(
+            family="Arial, sans-serif",
+            color="#111827"
         )
     )
 
+    # --------------------------------------------------------
+    # MOSTRAR GRÁFICO
+    # --------------------------------------------------------
+
     st.plotly_chart(
         fig_unidad,
+
         use_container_width=True,
+
         key="grafico_distribucion_unidad",
+
         config={
             "displayModeBar": False,
             "responsive": True,
             "scrollZoom": False,
             "doubleClick": False,
-            "showTips": True,
-            "staticPlot": True
+            "editable": False
         }
     )
 
@@ -1398,7 +1476,7 @@ if not data.empty:
     # COLORES DIFERENTES
     # --------------------------------------------------------
 
-    colores_servicio = [
+    colores_servicio_base = [
         "#10b981",
         "#3b82f6",
         "#f59e0b",
@@ -1416,8 +1494,8 @@ if not data.empty:
     ]
 
     colores_servicio = [
-        colores_servicio[
-            i % len(colores_servicio)
+        colores_servicio_base[
+            i % len(colores_servicio_base)
         ]
         for i in range(
             len(servicio_data)
@@ -1451,7 +1529,7 @@ if not data.empty:
             textposition="outside",
 
             textfont=dict(
-                color="#333333",
+                color="#111827",
                 size=13
             ),
 
@@ -1473,19 +1551,60 @@ if not data.empty:
 
     fig_servicio.update_layout(
 
+        # ----------------------------------------------------
+        # TAMAÑO
+        # ----------------------------------------------------
+
         height=480,
 
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="rgba(0,0,0,0)",
+        # ----------------------------------------------------
+        # FONDO FIJO BLANCO
+        # ----------------------------------------------------
+
+        paper_bgcolor="#ffffff",
+
+        plot_bgcolor="#ffffff",
+
+        # ----------------------------------------------------
+        # MÁRGENES
+        # ----------------------------------------------------
 
         margin=dict(
-            l=20,
-            r=20,
+            l=25,
+            r=25,
             t=45,
             b=120
         ),
 
         showlegend=False,
+
+        # ----------------------------------------------------
+        # HOVER
+        # ----------------------------------------------------
+
+        hovermode="closest",
+
+        # ----------------------------------------------------
+        # BLOQUEAR SELECCIÓN
+        # ----------------------------------------------------
+
+        clickmode="none",
+
+        # ----------------------------------------------------
+        # BLOQUEAR MOVIMIENTO / ZOOM
+        # ----------------------------------------------------
+
+        dragmode=False,
+
+        # ----------------------------------------------------
+        # MANTENER ESTADO
+        # ----------------------------------------------------
+
+        uirevision="dashboard",
+
+        # ----------------------------------------------------
+        # EJE X
+        # ----------------------------------------------------
 
         xaxis=dict(
 
@@ -1495,41 +1614,78 @@ if not data.empty:
 
             tickfont=dict(
                 size=11,
-                color="#374151"
+                color="#111827"
             ),
 
             title=dict(
                 text="SERVICIO",
+
                 font=dict(
                     size=13,
-                    color="#6b7280"
+                    color="#374151"
                 )
-            )
+            ),
+
+            fixedrange=True
         ),
+
+        # ----------------------------------------------------
+        # EJE Y
+        # ----------------------------------------------------
 
         yaxis=dict(
 
-            title="Monto (S/)",
+            title=dict(
+                text="Monto (S/)",
 
-            gridcolor="rgba(75,85,99,.12)",
+                font=dict(
+                    size=13,
+                    color="#374151"
+                )
+            ),
 
-            zeroline=False
+            tickfont=dict(
+                size=11,
+                color="#374151"
+            ),
+
+            gridcolor="#e5e7eb",
+
+            zeroline=False,
+
+            fixedrange=True
+        ),
+
+        # ----------------------------------------------------
+        # FUENTE
+        # ----------------------------------------------------
+
+        font=dict(
+            family="Arial, sans-serif",
+            color="#111827"
         )
     )
 
+    # --------------------------------------------------------
+    # MOSTRAR GRÁFICO
+    # --------------------------------------------------------
+
     st.plotly_chart(
         fig_servicio,
+
         use_container_width=True,
+
         key="grafico_distribucion_servicio",
+
         config={
             "displayModeBar": False,
             "responsive": True,
             "scrollZoom": False,
             "doubleClick": False,
-            "showTips": True,
-            "staticPlot": True
+            "editable": False
         }
     )
+
 else:
 
     st.plotly_chart(
@@ -1539,8 +1695,6 @@ else:
         use_container_width=True,
         key="grafico_vacio_servicio"
     )
-
-
 # ============================================================
 # FOOTER
 # ============================================================
