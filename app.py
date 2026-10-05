@@ -39,10 +39,10 @@ def render_html(html):
 # CONFIGURACIÓN GOOGLE SHEETS
 # ============================================================
 
-ID_REGISTRO = "1owul690a_9m1ytj7VBSRRtuddhw7-agBRsj9f4vwoeI"
+ID_REGISTRO = "1Q5nFlkZRWxoCPDwxqEIX_llEJglsY7vHSfYPr2YNLMM"
 HOJA_REGISTRO = "REGISTROS"
 
-ID_CECO = "12vDtZL_WZPO1R0mJFsNjCV5CUofABKbWJLLsLbLHdHw"
+ID_CECO = "1_QWDZC4GSIB3pGasgZqo51s5aOrZLWXbjWx3edb14Cw"
 HOJA_CECO = "BD_CECO"
 
 
