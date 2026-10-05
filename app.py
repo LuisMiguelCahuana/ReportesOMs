@@ -336,98 +336,12 @@ def cargar_ceco():
         HOJA_CECO
     )
 
-    # ========================================================
-    # LEER TODA LA HOJA
-    # ========================================================
-
     data = hoja.get_all_values()
 
     if len(data) <= 1:
-        return pd.DataFrame(
-            columns=[
-                "item",
-                "unidad",
-                "servicio",
-                "cuadrilla",
-                "ceco",
-                "costo"
-            ]
-        )
+        return pd.DataFrame()
 
-    # ========================================================
-    # ENCABEZADOS REALES
-    # ========================================================
-
-    encabezados_originales = data[0]
-
-    # Limpiar encabezados
-    encabezados = [
-        str(columna).strip().upper()
-        for columna in encabezados_originales
-    ]
-
-    # ========================================================
-    # COLUMNAS QUE NECESITA EL DASHBOARD
-    # ========================================================
-
-    columnas_necesarias = [
-        "ITEM",
-        "UNIDAD_DE_NEGOCIO",
-        "SERVICIO_ELECTRICO",
-        "CUADRILLA",
-        "CECO",
-        "COSTO_CUADRILLA"
-    ]
-
-    # ========================================================
-    # VALIDAR COLUMNAS
-    # ========================================================
-
-    faltantes = [
-        columna
-        for columna in columnas_necesarias
-        if columna not in encabezados
-    ]
-
-    if faltantes:
-        raise ValueError(
-            "Faltan columnas en BD_CECO: "
-            + ", ".join(faltantes)
-        )
-
-    # ========================================================
-    # POSICIONES REALES DE LAS COLUMNAS
-    # ========================================================
-
-    posiciones = {
-        columna: encabezados.index(columna)
-        for columna in columnas_necesarias
-    }
-
-    # ========================================================
-    # EXTRAER SOLO LAS COLUMNAS CORRECTAS
-    # ========================================================
-
-    filas = []
-
-    for fila in data[1:]:
-
-        # Evitar problemas con filas de diferente longitud
-        if len(fila) <= max(posiciones.values()):
-            continue
-
-        filas.append([
-            fila[posiciones["ITEM"]],
-            fila[posiciones["UNIDAD_DE_NEGOCIO"]],
-            fila[posiciones["SERVICIO_ELECTRICO"]],
-            fila[posiciones["CUADRILLA"]],
-            fila[posiciones["CECO"]],
-            fila[posiciones["COSTO_CUADRILLA"]]
-        ])
-
-    # ========================================================
-    # CREAR DATAFRAME
-    # ========================================================
+    filas = data[1:]
 
     df = pd.DataFrame(
         filas,
@@ -441,39 +355,11 @@ def cargar_ceco():
         ]
     )
 
-    # ========================================================
-    # LIMPIAR TEXTO
-    # ========================================================
-
-    for columna in [
-        "item",
-        "unidad",
-        "servicio",
-        "cuadrilla",
-        "ceco"
-    ]:
-        df[columna] = (
-            df[columna]
-            .astype(str)
-            .str.strip()
-        )
-
-    # ========================================================
-    # CONVERTIR COSTO
-    #
-    # Ejemplo:
-    # 12.286,46 → 12286.46
-    #
-    # También:
-    # r → 0
-    # ========================================================
-
     df["costo"] = (
         df["costo"]
         .astype(str)
+        .str.replace(",", "", regex=False)
         .str.strip()
-        .str.replace(".", "", regex=False)
-        .str.replace(",", ".", regex=False)
     )
 
     df["costo"] = pd.to_numeric(
@@ -482,6 +368,8 @@ def cargar_ceco():
     ).fillna(0)
 
     return df
+
+
 # ============================================================
 # FORMATO SOLES
 # ============================================================
