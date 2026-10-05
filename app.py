@@ -317,6 +317,8 @@ def cargar_registros():
         filas,
         columns=encabezados
     )
+
+
 # ============================================================
 # CARGAR CECO
 # ============================================================
@@ -337,23 +339,9 @@ def cargar_ceco():
     data = hoja.get_all_values()
 
     if len(data) <= 1:
-        return pd.DataFrame(
-            columns=[
-                "item",
-                "unidad",
-                "servicio",
-                "cuadrilla",
-                "ceco",
-                "costo"
-            ]
-        )
+        return pd.DataFrame()
 
-    # Tomamos únicamente las 6 columnas que utiliza el dashboard
-    filas = [
-        fila[:6]
-        for fila in data[1:]
-        if len(fila) >= 6
-    ]
+    filas = data[1:]
 
     df = pd.DataFrame(
         filas,
@@ -380,6 +368,8 @@ def cargar_ceco():
     ).fillna(0)
 
     return df
+
+
 # ============================================================
 # FORMATO SOLES
 # ============================================================
