@@ -13,26 +13,11 @@ import calendar
 # ============================================================
 
 st.set_page_config(
-    page_title="Dashboard Control OMs",
+    page_title="Dashboard OMs",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-
-
-# ============================================================
-# FUNCIÓN PARA RENDERIZAR HTML
-# ============================================================
-
-def render_html(html):
-
-    if hasattr(st, "html"):
-        st.html(html)
-    else:
-        st.markdown(
-            html,
-            unsafe_allow_html=True
-        )
 
 
 # ============================================================
@@ -60,212 +45,233 @@ METAS = {
 
 
 # ============================================================
+# MESES
+# ============================================================
+
+MESES = [
+    "Enero",
+    "Febrero",
+    "Marzo",
+    "Abril",
+    "Mayo",
+    "Junio",
+    "Julio",
+    "Agosto",
+    "Septiembre",
+    "Octubre",
+    "Noviembre",
+    "Diciembre"
+]
+
+
+# ============================================================
 # ESTILOS
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <style>
 
-        .stApp {
-            background:
-                radial-gradient(
-                    circle at top left,
-                    rgba(178, 13, 13, 0.05),
-                    transparent 35%
-                ),
-                linear-gradient(
-                    135deg,
-                    #f7f8fa 0%,
-                    #eef1f5 100%
-                );
-        }
+    .stApp {
+        background:
+            radial-gradient(
+                circle at top left,
+                rgba(178, 13, 13, 0.05),
+                transparent 35%
+            ),
+            linear-gradient(
+                135deg,
+                #f7f8fa 0%,
+                #eef1f5 100%
+            );
+    }
+
+    .block-container {
+        max-width: 1450px;
+        padding-top: 1.5rem;
+        padding-bottom: 3rem;
+    }
+
+    #MainMenu {
+        visibility: hidden;
+    }
+
+    footer {
+        visibility: hidden;
+    }
+
+    header {
+        visibility: hidden;
+    }
+
+    .dashboard-header {
+        text-align: center;
+        margin-bottom: 28px;
+    }
+
+    .dashboard-title {
+        font-size: 42px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 8px;
+
+        background: linear-gradient(
+            135deg,
+            #333333 0%,
+            #B20D0D 100%
+        );
+
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .dashboard-subtitle {
+        color: #6c757d;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .filter-box {
+        background: rgba(255,255,255,0.90);
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 18px 22px 10px 22px;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.06);
+        margin-bottom: 22px;
+    }
+
+    .kpi {
+        background: rgba(255,255,255,0.95);
+        border: 1px solid #dee2e6;
+        border-radius: 20px;
+        padding: 20px 18px;
+        min-height: 150px;
+        box-shadow: 0 8px 28px rgba(0,0,0,0.055);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .kpi::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: #B20D0D;
+    }
+
+    .kpi-title {
+        color: #6c757d;
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 12px;
+    }
+
+    .kpi-value {
+        color: #333333;
+        font-size: 29px;
+        font-weight: 800;
+        line-height: 1.15;
+        word-break: break-word;
+    }
+
+    .kpi-icon {
+        font-size: 25px;
+        margin-bottom: 8px;
+    }
+
+    .avance-rojo::before {
+        background: #B20D0D;
+    }
+
+    .avance-amarillo::before {
+        background: #f59e0b;
+    }
+
+    .avance-verde::before {
+        background: #10b981;
+    }
+
+    .stat-box {
+        background: rgba(255,255,255,0.90);
+        border: 1px solid #dee2e6;
+        border-radius: 16px;
+        padding: 15px;
+        text-align: center;
+        box-shadow: 0 5px 18px rgba(0,0,0,0.04);
+    }
+
+    .stat-value {
+        font-size: 21px;
+        font-weight: 800;
+        color: #333333;
+    }
+
+    .stat-title {
+        color: #6c757d;
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 3px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 750;
+        color: #333333;
+        margin-top: 20px;
+        margin-bottom: 4px;
+    }
+
+    .section-subtitle {
+        color: #6c757d;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    div[data-baseweb="select"] > div {
+        border-radius: 12px;
+        border: 1px solid #dee2e6;
+    }
+
+    div[data-baseweb="select"] > div:focus-within {
+        border-color: #B20D0D;
+        box-shadow: 0 0 0 1px #B20D0D;
+    }
+
+    @media (max-width: 768px) {
 
         .block-container {
-            max-width: 1450px;
-            padding-top: 1.5rem;
-            padding-bottom: 3rem;
-        }
-
-        #MainMenu {
-            visibility: hidden;
-        }
-
-        footer {
-            visibility: hidden;
-        }
-
-        header {
-            visibility: hidden;
-        }
-
-        .dashboard-header {
-            text-align: center;
-            margin-bottom: 28px;
+            padding: 12px 10px 30px 10px;
         }
 
         .dashboard-title {
-            font-size: 42px;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 8px;
-
-            background: linear-gradient(
-                135deg,
-                #333333 0%,
-                #B20D0D 100%
-            );
-
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 29px;
         }
 
         .dashboard-subtitle {
-            color: #6c757d;
-            font-size: 16px;
-            font-weight: 500;
-        }
-
-        .filter-box {
-            background: rgba(255, 255, 255, 0.90);
-            border: 1px solid #dee2e6;
-            border-radius: 20px;
-            padding: 18px 22px 10px 22px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
-            margin-bottom: 22px;
+            font-size: 13px;
         }
 
         .kpi {
-            background: rgba(255, 255, 255, 0.95);
-            border: 1px solid #dee2e6;
-            border-radius: 20px;
-            padding: 20px 18px;
-            min-height: 150px;
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.055);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .kpi::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: #B20D0D;
-        }
-
-        .kpi-title {
-            color: #6c757d;
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            min-height: 125px;
+            padding: 15px;
         }
 
         .kpi-value {
-            color: #333333;
-            font-size: 29px;
-            font-weight: 800;
-            line-height: 1.15;
-            word-break: break-word;
-        }
-
-        .kpi-icon {
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
-
-        .avance-rojo::before {
-            background: #B20D0D;
-        }
-
-        .avance-amarillo::before {
-            background: #f59e0b;
-        }
-
-        .avance-verde::before {
-            background: #10b981;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.90);
-            border: 1px solid #dee2e6;
-            border-radius: 16px;
-            padding: 15px;
-            text-align: center;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.04);
+            font-size: 22px;
         }
 
         .stat-value {
-            font-size: 21px;
-            font-weight: 800;
-            color: #333333;
+            font-size: 18px;
         }
-
-        .stat-title {
-            color: #6c757d;
-            font-size: 12px;
-            font-weight: 600;
-            margin-top: 3px;
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 750;
-            color: #333333;
-            margin-top: 20px;
-            margin-bottom: 4px;
-        }
-
-        .section-subtitle {
-            color: #6c757d;
-            font-size: 13px;
-            margin-bottom: 8px;
-        }
-
-        div[data-baseweb="select"] > div {
-            border-radius: 12px;
-            border: 1px solid #dee2e6;
-        }
-
-        div[data-baseweb="select"] > div:focus-within {
-            border-color: #B20D0D;
-            box-shadow: 0 0 0 1px #B20D0D;
-        }
-
-        @media (max-width: 768px) {
-
-            .block-container {
-                padding: 12px 10px 30px 10px;
-            }
-
-            .dashboard-title {
-                font-size: 29px;
-            }
-
-            .dashboard-subtitle {
-                font-size: 13px;
-            }
-
-            .kpi {
-                min-height: 125px;
-                padding: 15px;
-            }
-
-            .kpi-value {
-                font-size: 22px;
-            }
-
-            .stat-value {
-                font-size: 18px;
-            }
-        }
+    }
 
     </style>
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 
@@ -290,6 +296,8 @@ def conectar_google():
 
 # ============================================================
 # CARGAR REGISTROS
+# EQUIVALENTE A:
+# hoja.getDataRange().getDisplayValues().slice(1)
 # ============================================================
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -321,6 +329,8 @@ def cargar_registros():
 
 # ============================================================
 # CARGAR CECO
+# EQUIVALENTE A:
+# hoja.getDataRange().getValues()
 # ============================================================
 
 @st.cache_data(ttl=300, show_spinner=False)
@@ -355,11 +365,15 @@ def cargar_ceco():
         ]
     )
 
+    # --------------------------------------------------------
+    # CONVERTIR COSTO A NÚMERO
+    # --------------------------------------------------------
+
     df["costo"] = (
         df["costo"]
         .astype(str)
-        .str.replace(",", "", regex=False)
         .str.strip()
+        .str.replace(",", "", regex=False)
     )
 
     df["costo"] = pd.to_numeric(
@@ -507,9 +521,7 @@ except Exception as e:
         "No fue posible conectar con Google Sheets."
     )
 
-    st.code(
-        str(e)
-    )
+    st.code(str(e))
 
     st.stop()
 
@@ -528,7 +540,7 @@ if registros.empty:
 
 
 # ============================================================
-# VALIDAR COLUMNAS MÍNIMAS
+# VALIDAR COLUMNAS
 # ============================================================
 
 if len(registros.columns) < 16:
@@ -545,15 +557,18 @@ if len(registros.columns) < 16:
 # PREPARAR REGISTROS
 # ============================================================
 
+# Columna 9 = fecha
 registros["_fecha"] = convertir_fecha(
     registros.iloc[:, 8]
 )
 
+
+# Columna 16 = pre valorizado
 registros["_pre"] = (
     registros.iloc[:, 15]
     .astype(str)
-    .str.replace(",", "", regex=False)
     .str.strip()
+    .str.replace(",", "", regex=False)
 )
 
 registros["_pre"] = pd.to_numeric(
@@ -566,9 +581,10 @@ registros["_pre"] = pd.to_numeric(
 # HEADER
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <div class="dashboard-header">
+
         <div class="dashboard-title">
             📊 Dashboard Control OMs
         </div>
@@ -576,8 +592,10 @@ render_html(
         <div class="dashboard-subtitle">
             Monitoreo de producción, capacidad y avance
         </div>
+
     </div>
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 
@@ -585,10 +603,11 @@ render_html(
 # FILTROS
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <div class="filter-box">
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 col1, col2 = st.columns(2)
@@ -614,24 +633,22 @@ periodos = sorted(
     reverse=True
 )
 
+
 opciones_periodo = {
-    "Seleccione periodo...": None
+    "📅 Seleccione periodo...": None
 }
+
 
 for periodo in periodos:
 
     fecha_periodo = periodo.to_timestamp()
 
-    texto = (
-        fecha_periodo
-        .strftime("%B %Y")
-        .capitalize()
-    )
+    mes = fecha_periodo.month
+    anio = fecha_periodo.year
 
-    clave = (
-        f"{fecha_periodo.year}-"
-        f"{fecha_periodo.month}"
-    )
+    texto = f"{MESES[mes - 1]} {anio}"
+
+    clave = f"{anio}-{mes}"
 
     opciones_periodo[texto] = clave
 
@@ -639,7 +656,7 @@ for periodo in periodos:
 with col1:
 
     periodo_nombre = st.selectbox(
-        "📅 Periodo",
+        "Periodo",
         list(opciones_periodo.keys()),
         index=0,
         key="select_periodo"
@@ -664,30 +681,32 @@ items = sorted(
     .unique()
 )
 
+
 opciones_item = [
-    "Seleccione item..."
+    "📋 Seleccione item..."
 ] + items
 
 
 with col2:
 
     item_seleccionado = st.selectbox(
-        "📋 Item",
+        "Item",
         opciones_item,
         index=0,
         key="select_item"
     )
 
 
-render_html(
+st.markdown(
     """
     </div>
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 
 # ============================================================
-# FILTRAR
+# FILTRAR REGISTROS
 # ============================================================
 
 data = registros.copy()
@@ -707,27 +726,52 @@ if periodo_seleccionado:
     ]
 
 
-if item_seleccionado != "Seleccione item...":
+if item_seleccionado != "📋 Seleccione item...":
 
     data = data[
-        data.iloc[:, 0].astype(str)
-        == item_seleccionado
+        data.iloc[:, 0]
+        .astype(str)
+        .str.strip()
+        ==
+        item_seleccionado
     ]
 
 
 # ============================================================
-# STATS
+# VARIABLES INICIALES
+# ============================================================
+
+pre = 0
+cuadrilla = 0
+meta = 0
+avance = 0
+porcentaje = 0
+
+dias_mes = 0
+dias_trans = 0
+costo_diario = 0
+
+color_clase = "avance-rojo"
+
+
+# ============================================================
+# CÁLCULOS
 # ============================================================
 
 if (
     periodo_seleccionado
-    and item_seleccionado != "Seleccione item..."
+    and item_seleccionado != "📋 Seleccione item..."
 ):
 
     anio, mes = map(
         int,
         periodo_seleccionado.split("-")
     )
+
+
+    # --------------------------------------------------------
+    # DÍAS
+    # --------------------------------------------------------
 
     dias_mes = dias_del_mes(
         anio,
@@ -739,6 +783,11 @@ if (
         mes
     )
 
+
+    # --------------------------------------------------------
+    # CECO DEL ITEM
+    # --------------------------------------------------------
+
     ceco_item = ceco[
         ceco["item"]
         .astype(str)
@@ -747,9 +796,20 @@ if (
         item_seleccionado
     ]
 
+
+    # --------------------------------------------------------
+    # COSTO TOTAL DE CUADRILLA
+    # --------------------------------------------------------
+
     costo_cuadrilla_total = (
-        ceco_item["costo"].sum()
+        ceco_item["costo"]
+        .sum()
     )
+
+
+    # --------------------------------------------------------
+    # COSTO DIARIO
+    # --------------------------------------------------------
 
     costo_diario = (
         costo_cuadrilla_total / dias_mes
@@ -757,18 +817,45 @@ if (
         else 0
     )
 
+
+    # --------------------------------------------------------
+    # CUADRILLA ACUMULADA
+    # --------------------------------------------------------
+
     cuadrilla = (
         costo_diario * dias_trans
     )
 
+
+    # --------------------------------------------------------
+    # PRE VALORIZADO
+    # --------------------------------------------------------
+
     pre = data["_pre"].sum()
+
+
+    # --------------------------------------------------------
+    # META
+    # --------------------------------------------------------
 
     meta = METAS.get(
         item_seleccionado,
         0
     )
 
-    avance = pre + cuadrilla
+
+    # --------------------------------------------------------
+    # AVANCE
+    # --------------------------------------------------------
+
+    avance = (
+        pre + cuadrilla
+    )
+
+
+    # --------------------------------------------------------
+    # PORCENTAJE
+    # --------------------------------------------------------
 
     porcentaje = (
         (avance / meta) * 100
@@ -776,22 +863,10 @@ if (
         else 0
     )
 
+
     color_clase = clase_avance(
         porcentaje
     )
-
-else:
-
-    pre = 0
-    cuadrilla = 0
-    meta = 0
-    avance = 0
-    porcentaje = 0
-    dias_mes = 0
-    dias_trans = 0
-    costo_diario = 0
-
-    color_clase = "avance-rojo"
 
 
 # ============================================================
@@ -801,9 +876,19 @@ else:
 k1, k2, k3, k4 = st.columns(4)
 
 
+# ------------------------------------------------------------
+# PRE VALORIZADO
+# ------------------------------------------------------------
+
 with k1:
 
-    render_html(
+    valor_pre = (
+        formato_soles(pre)
+        if item_seleccionado != "📋 Seleccione item..."
+        else "Seleccione ITEM"
+    )
+
+    st.markdown(
         f"""
         <div class="kpi">
 
@@ -816,21 +901,28 @@ with k1:
             </div>
 
             <div class="kpi-value">
-                {
-                    formato_soles(pre)
-                    if item_seleccionado != "Seleccione item..."
-                    else "Seleccione ITEM"
-                }
+                {valor_pre}
             </div>
 
         </div>
-        """
+        """,
+        unsafe_allow_html=True
     )
 
 
+# ------------------------------------------------------------
+# COSTO CUADRILLA
+# ------------------------------------------------------------
+
 with k2:
 
-    render_html(
+    valor_cuadrilla = (
+        formato_soles(cuadrilla)
+        if item_seleccionado != "📋 Seleccione item..."
+        else "-"
+    )
+
+    st.markdown(
         f"""
         <div class="kpi">
 
@@ -843,21 +935,28 @@ with k2:
             </div>
 
             <div class="kpi-value">
-                {
-                    formato_soles(cuadrilla)
-                    if item_seleccionado != "Seleccione item..."
-                    else "-"
-                }
+                {valor_cuadrilla}
             </div>
 
         </div>
-        """
+        """,
+        unsafe_allow_html=True
     )
 
 
+# ------------------------------------------------------------
+# META
+# ------------------------------------------------------------
+
 with k3:
 
-    render_html(
+    valor_meta = (
+        formato_soles(meta)
+        if item_seleccionado != "📋 Seleccione item..."
+        else "-"
+    )
+
+    st.markdown(
         f"""
         <div class="kpi">
 
@@ -870,21 +969,28 @@ with k3:
             </div>
 
             <div class="kpi-value">
-                {
-                    formato_soles(meta)
-                    if item_seleccionado != "Seleccione item..."
-                    else "-"
-                }
+                {valor_meta}
             </div>
 
         </div>
-        """
+        """,
+        unsafe_allow_html=True
     )
 
 
+# ------------------------------------------------------------
+# AVANCE
+# ------------------------------------------------------------
+
 with k4:
 
-    render_html(
+    valor_porcentaje = (
+        f"{porcentaje:.1f}%"
+        if item_seleccionado != "📋 Seleccione item..."
+        else "-"
+    )
+
+    st.markdown(
         f"""
         <div class="kpi {color_clase}">
 
@@ -897,34 +1003,32 @@ with k4:
             </div>
 
             <div class="kpi-value">
-                {
-                    f"{porcentaje:.1f}%"
-                    if item_seleccionado != "Seleccione item..."
-                    else "-"
-                }
+                {valor_porcentaje}
             </div>
 
         </div>
-        """
+        """,
+        unsafe_allow_html=True
     )
 
 
 # ============================================================
-# STATS
+# ESTADÍSTICAS
 # ============================================================
 
 if (
     periodo_seleccionado
-    and item_seleccionado != "Seleccione item..."
+    and item_seleccionado != "📋 Seleccione item..."
 ):
 
     st.markdown("<br>", unsafe_allow_html=True)
 
     s1, s2, s3, s4 = st.columns(4)
 
+
     with s1:
 
-        render_html(
+        st.markdown(
             f"""
             <div class="stat-box">
 
@@ -937,12 +1041,14 @@ if (
                 </div>
 
             </div>
-            """
+            """,
+            unsafe_allow_html=True
         )
+
 
     with s2:
 
-        render_html(
+        st.markdown(
             f"""
             <div class="stat-box">
 
@@ -955,12 +1061,14 @@ if (
                 </div>
 
             </div>
-            """
+            """,
+            unsafe_allow_html=True
         )
+
 
     with s3:
 
-        render_html(
+        st.markdown(
             f"""
             <div class="stat-box">
 
@@ -973,12 +1081,14 @@ if (
                 </div>
 
             </div>
-            """
+            """,
+            unsafe_allow_html=True
         )
+
 
     with s4:
 
-        render_html(
+        st.markdown(
             f"""
             <div class="stat-box">
 
@@ -991,15 +1101,16 @@ if (
                 </div>
 
             </div>
-            """
+            """,
+            unsafe_allow_html=True
         )
 
 
 # ============================================================
-# SI NO HAY ITEM
+# SIN ITEM
 # ============================================================
 
-if item_seleccionado == "Seleccione item...":
+if item_seleccionado == "📋 Seleccione item...":
 
     st.info(
         "📌 Selecciona un periodo y un item para visualizar "
@@ -1013,7 +1124,7 @@ if item_seleccionado == "Seleccione item...":
 # PRODUCCIÓN VS CAPACIDAD
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <div class="section-title">
         ⚖️ Producción vs Capacidad
@@ -1023,7 +1134,8 @@ render_html(
         Comparación entre la producción valorizada y la
         capacidad acumulada de cuadrilla.
     </div>
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 
@@ -1062,7 +1174,7 @@ fig_comparativo.add_trace(
             ],
 
             line=dict(
-            width=0
+                width=0
             )
         ),
 
@@ -1079,11 +1191,6 @@ fig_comparativo.update_layout(
 
     height=410,
 
-    # ========================================================
-    # FONDO FIJO CLARO
-    # No depende del modo oscuro del navegador
-    # ========================================================
-
     paper_bgcolor="#ffffff",
     plot_bgcolor="#ffffff",
 
@@ -1098,19 +1205,11 @@ fig_comparativo.update_layout(
 
     hovermode="closest",
 
-    # ========================================================
-    # BLOQUEAR SELECCIÓN / ZOOM / MOVIMIENTO
-    # ========================================================
-
     clickmode="none",
 
     dragmode=False,
 
     uirevision="dashboard",
-
-    # ========================================================
-    # EJE Y
-    # ========================================================
 
     yaxis=dict(
 
@@ -1134,10 +1233,6 @@ fig_comparativo.update_layout(
         fixedrange=True
     ),
 
-    # ========================================================
-    # EJE X
-    # ========================================================
-
     xaxis=dict(
 
         showgrid=False,
@@ -1150,10 +1245,6 @@ fig_comparativo.update_layout(
         fixedrange=True
     ),
 
-    # ========================================================
-    # FUENTE GENERAL DEL GRÁFICO
-    # ========================================================
-
     font=dict(
         family="Arial, sans-serif",
         color="#111827"
@@ -1163,11 +1254,8 @@ fig_comparativo.update_layout(
 
 st.plotly_chart(
     fig_comparativo,
-
     use_container_width=True,
-
     key="grafico_produccion_capacidad",
-
     config={
         "displayModeBar": False,
         "responsive": True,
@@ -1176,11 +1264,13 @@ st.plotly_chart(
         "editable": False
     }
 )
+
+
 # ============================================================
 # DISTRIBUCIÓN POR UNIDAD
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <div class="section-title">
         🏢 Distribución por Unidad
@@ -1189,15 +1279,12 @@ render_html(
     <div class="section-subtitle">
         Producción valorizada agrupada por unidad.
     </div>
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 
 if not data.empty:
-
-    # --------------------------------------------------------
-    # AGRUPACIÓN UNIDAD
-    # --------------------------------------------------------
 
     unidad_data = (
         data.assign(
@@ -1212,9 +1299,6 @@ if not data.empty:
         )
     )
 
-    # --------------------------------------------------------
-    # COLORES DIFERENTES
-    # --------------------------------------------------------
 
     colores_unidad_base = [
         "#2563eb",
@@ -1231,6 +1315,7 @@ if not data.empty:
         "#e11d48"
     ]
 
+
     colores_unidad = [
         colores_unidad_base[
             i % len(colores_unidad_base)
@@ -1240,20 +1325,15 @@ if not data.empty:
         )
     ]
 
-    # --------------------------------------------------------
-    # TEXTO VISIBLE
-    # --------------------------------------------------------
 
     textos_unidad = [
         formato_soles(valor)
         for valor in unidad_data.values
     ]
 
-    # --------------------------------------------------------
-    # GRÁFICO
-    # --------------------------------------------------------
 
     fig_unidad = go.Figure()
+
 
     fig_unidad.add_trace(
         go.Bar(
@@ -1287,26 +1367,14 @@ if not data.empty:
         )
     )
 
+
     fig_unidad.update_layout(
 
-        # ----------------------------------------------------
-        # TAMAÑO
-        # ----------------------------------------------------
-
         height=460,
-
-        # ----------------------------------------------------
-        # FONDO FIJO BLANCO
-        # No depende del modo oscuro del navegador
-        # ----------------------------------------------------
 
         paper_bgcolor="#ffffff",
 
         plot_bgcolor="#ffffff",
-
-        # ----------------------------------------------------
-        # MÁRGENES
-        # ----------------------------------------------------
 
         margin=dict(
             l=25,
@@ -1317,33 +1385,13 @@ if not data.empty:
 
         showlegend=False,
 
-        # ----------------------------------------------------
-        # HOVER
-        # ----------------------------------------------------
-
         hovermode="closest",
-
-        # ----------------------------------------------------
-        # BLOQUEAR SELECCIÓN
-        # ----------------------------------------------------
 
         clickmode="none",
 
-        # ----------------------------------------------------
-        # BLOQUEAR MOVIMIENTO / ZOOM
-        # ----------------------------------------------------
-
         dragmode=False,
 
-        # ----------------------------------------------------
-        # MANTENER ESTADO
-        # ----------------------------------------------------
-
         uirevision="dashboard",
-
-        # ----------------------------------------------------
-        # EJE X
-        # ----------------------------------------------------
 
         xaxis=dict(
 
@@ -1368,10 +1416,6 @@ if not data.empty:
             fixedrange=True
         ),
 
-        # ----------------------------------------------------
-        # EJE Y
-        # ----------------------------------------------------
-
         yaxis=dict(
 
             title=dict(
@@ -1395,27 +1439,17 @@ if not data.empty:
             fixedrange=True
         ),
 
-        # ----------------------------------------------------
-        # FUENTE
-        # ----------------------------------------------------
-
         font=dict(
             family="Arial, sans-serif",
             color="#111827"
         )
     )
 
-    # --------------------------------------------------------
-    # MOSTRAR GRÁFICO
-    # --------------------------------------------------------
 
     st.plotly_chart(
         fig_unidad,
-
         use_container_width=True,
-
         key="grafico_distribucion_unidad",
-
         config={
             "displayModeBar": False,
             "responsive": True,
@@ -1440,7 +1474,7 @@ else:
 # DISTRIBUCIÓN POR SERVICIO
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <div class="section-title">
         🛠️ Distribución por Servicio
@@ -1449,15 +1483,12 @@ render_html(
     <div class="section-subtitle">
         Producción valorizada agrupada por servicio.
     </div>
-    """
+    """,
+    unsafe_allow_html=True
 )
 
 
 if not data.empty:
-
-    # --------------------------------------------------------
-    # AGRUPACIÓN SERVICIO
-    # --------------------------------------------------------
 
     servicio_data = (
         data.assign(
@@ -1472,9 +1503,6 @@ if not data.empty:
         )
     )
 
-    # --------------------------------------------------------
-    # COLORES DIFERENTES
-    # --------------------------------------------------------
 
     colores_servicio_base = [
         "#10b981",
@@ -1493,6 +1521,7 @@ if not data.empty:
         "#a855f7"
     ]
 
+
     colores_servicio = [
         colores_servicio_base[
             i % len(colores_servicio_base)
@@ -1502,20 +1531,15 @@ if not data.empty:
         )
     ]
 
-    # --------------------------------------------------------
-    # TEXTO VISIBLE
-    # --------------------------------------------------------
 
     textos_servicio = [
         formato_soles(valor)
         for valor in servicio_data.values
     ]
 
-    # --------------------------------------------------------
-    # GRÁFICO
-    # --------------------------------------------------------
 
     fig_servicio = go.Figure()
+
 
     fig_servicio.add_trace(
         go.Bar(
@@ -1549,25 +1573,14 @@ if not data.empty:
         )
     )
 
+
     fig_servicio.update_layout(
 
-        # ----------------------------------------------------
-        # TAMAÑO
-        # ----------------------------------------------------
-
         height=480,
-
-        # ----------------------------------------------------
-        # FONDO FIJO BLANCO
-        # ----------------------------------------------------
 
         paper_bgcolor="#ffffff",
 
         plot_bgcolor="#ffffff",
-
-        # ----------------------------------------------------
-        # MÁRGENES
-        # ----------------------------------------------------
 
         margin=dict(
             l=25,
@@ -1578,33 +1591,13 @@ if not data.empty:
 
         showlegend=False,
 
-        # ----------------------------------------------------
-        # HOVER
-        # ----------------------------------------------------
-
         hovermode="closest",
-
-        # ----------------------------------------------------
-        # BLOQUEAR SELECCIÓN
-        # ----------------------------------------------------
 
         clickmode="none",
 
-        # ----------------------------------------------------
-        # BLOQUEAR MOVIMIENTO / ZOOM
-        # ----------------------------------------------------
-
         dragmode=False,
 
-        # ----------------------------------------------------
-        # MANTENER ESTADO
-        # ----------------------------------------------------
-
         uirevision="dashboard",
-
-        # ----------------------------------------------------
-        # EJE X
-        # ----------------------------------------------------
 
         xaxis=dict(
 
@@ -1629,10 +1622,6 @@ if not data.empty:
             fixedrange=True
         ),
 
-        # ----------------------------------------------------
-        # EJE Y
-        # ----------------------------------------------------
-
         yaxis=dict(
 
             title=dict(
@@ -1656,27 +1645,17 @@ if not data.empty:
             fixedrange=True
         ),
 
-        # ----------------------------------------------------
-        # FUENTE
-        # ----------------------------------------------------
-
         font=dict(
             family="Arial, sans-serif",
             color="#111827"
         )
     )
 
-    # --------------------------------------------------------
-    # MOSTRAR GRÁFICO
-    # --------------------------------------------------------
 
     st.plotly_chart(
         fig_servicio,
-
         use_container_width=True,
-
         key="grafico_distribucion_servicio",
-
         config={
             "displayModeBar": False,
             "responsive": True,
@@ -1695,11 +1674,13 @@ else:
         use_container_width=True,
         key="grafico_vacio_servicio"
     )
+
+
 # ============================================================
 # FOOTER
 # ============================================================
 
-render_html(
+st.markdown(
     """
     <div
         style="
@@ -1711,5 +1692,6 @@ render_html(
     >
         Dashboard Control OMs · Streamlit
     </div>
-    """
+    """,
+    unsafe_allow_html=True
 )
