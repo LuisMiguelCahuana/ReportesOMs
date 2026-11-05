@@ -355,17 +355,7 @@ def cargar_ceco():
         ]
     )
 
-    df["costo"] = (
-        df["costo"]
-        .astype(str)
-        .str.replace(",", "", regex=False)
-        .str.strip()
-    )
-
-    df["costo"] = pd.to_numeric(
-        df["costo"],
-        errors="coerce"
-    ).fillna(0)
+    df["costo"] = df["costo"].apply(convertir_importe)
 
     return df
 
@@ -795,9 +785,9 @@ if (
         else 0
     )
 
-    # Capacidad del gráfico = COSTO CUADRILLA total de BD_CECO para el ITEM.
-    # El costo diario se conserva solo como dato informativo.
-    cuadrilla = costo_cuadrilla_total
+    # Capacidad = (suma COSTO_CUADRILLA del ITEM / días del mes)
+    #             * días transcurridos del periodo.
+    cuadrilla = costo_diario * dias_trans
 
     pre = data["_pre"].sum()
 
@@ -1059,7 +1049,7 @@ render_html(
 
     <div class="section-subtitle">
         Comparación entre la producción valorizada y la
-        costo total de cuadrilla registrado en BD_CECO.
+        costo de cuadrilla prorrateado según los días transcurridos.
     </div>
     """
 )
