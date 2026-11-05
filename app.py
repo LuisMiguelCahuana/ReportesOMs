@@ -499,6 +499,7 @@ try:
     with st.spinner("Cargando información..."):
 
         registros = cargar_registros()
+        registros.columns = registros.columns.astype(str).str.strip()
         ceco = cargar_ceco()
 
 except Exception as e:
@@ -531,13 +532,24 @@ if registros.empty:
 # VALIDAR COLUMNAS MÍNIMAS
 # ============================================================
 
-if len(registros.columns) < 16:
+columnas_requeridas = [
+    "ITEM",
+    "FECHA_FIN",
+    "MONTO_PRE_VALORIZADO",
+    "UNIDAD_DE_NEGOCIO",
+    "SERVICIO_ELECTRICO",
+]
 
+columnas_faltantes = [
+    columna for columna in columnas_requeridas
+    if columna not in registros.columns
+]
+
+if columnas_faltantes:
     st.error(
-        "La hoja REGISTROS no contiene las 16 columnas "
-        "esperadas por el dashboard."
+        "Faltan columnas requeridas en la hoja REGISTROS: "
+        + ", ".join(columnas_faltantes)
     )
-
     st.stop()
 
 
@@ -545,12 +557,13 @@ if len(registros.columns) < 16:
 # PREPARAR REGISTROS
 # ============================================================
 
+# FECHA_FIN (columna I) y MONTO_PRE_VALORIZADO (columna P).
 registros["_fecha"] = convertir_fecha(
-    registros.iloc[:, 8]
+    registros["FECHA_FIN"]
 )
 
 registros["_pre"] = (
-    registros.iloc[:, 15]
+    registros["MONTO_PRE_VALORIZADO"]
     .astype(str)
     .str.replace(",", "", regex=False)
     .str.strip()
@@ -657,7 +670,7 @@ with col1:
 # ============================================================
 
 items = sorted(
-    registros.iloc[:, 0]
+    registros["ITEM"]
     .dropna()
     .astype(str)
     .str.strip()
@@ -710,7 +723,7 @@ if periodo_seleccionado:
 if item_seleccionado != "Seleccione item...":
 
     data = data[
-        data.iloc[:, 0].astype(str)
+        data["ITEM"].astype(str).str.strip()
         == item_seleccionado
     ]
 
@@ -1201,15 +1214,13 @@ if not data.empty:
 
     unidad_data = (
         data.assign(
-            _unidad=data.iloc[:, 2]
+            _unidad=data["UNIDAD_DE_NEGOCIO"]
             .astype(str)
             .str.strip()
         )
-        .groupby("_unidad")["_pre"]
+        .groupby("_unidad", dropna=False)["_pre"]
         .sum()
-        .sort_values(
-            ascending=False
-        )
+        .sort_values(ascending=False)
     )
 
     # --------------------------------------------------------
@@ -1459,18 +1470,23 @@ if not data.empty:
     # AGRUPACIÓN SERVICIO
     # --------------------------------------------------------
 
-    servicio_data = (
-        data.assign(
-            _servicio=data.iloc[:, 3]
-            .astype(str)
-            .str.strip()
-        )
-        .groupby("_servicio")["_pre"]
-        .sum()
-        .sort_values(
-            ascending=False
-        )
+    servicio_agrupado = data.assign(
+        _unidad=data["UNIDAD_DE_NEGOCIO"].astype(str).str.strip(),
+        _servicio=data["SERVICIO_ELECTRICO"].astype(str).str.strip(),
     )
+
+    servicio_data = (
+        servicio_agrupado
+        .groupby(["_unidad", "_servicio"], dropna=False)["_pre"]
+        .sum()
+        .sort_values(ascending=False)
+    )
+
+    # Etiqueta única para identificar la unidad y el servicio en el gráfico.
+    servicio_data.index = [
+        f"{unidad} - {servicio}"
+        for unidad, servicio in servicio_data.index
+    ]
 
     # --------------------------------------------------------
     # COLORES DIFERENTES
