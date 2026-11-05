@@ -403,12 +403,45 @@ def formato_entero(valor):
 # ============================================================
 
 def convertir_fecha(serie):
-
+    # FECHA_FIN puede venir como dd/mm/yyyy, dd-mm-yyyy o yyyy-mm-dd.
     return pd.to_datetime(
-        serie,
+        serie.astype(str).str.strip(),
         errors="coerce",
-        dayfirst=False
+        dayfirst=True
     )
+
+
+def convertir_importe(valor):
+    """Convierte importes de Sheets en formato peruano o internacional."""
+    if pd.isna(valor):
+        return 0.0
+    texto = str(valor).strip().replace("S/", "").replace("s/", "")
+    texto = texto.replace(" ", "")
+    if not texto:
+        return 0.0
+
+    coma = texto.rfind(",")
+    punto = texto.rfind(".")
+
+    if coma >= 0 and punto >= 0:
+        # El separador más a la derecha es el decimal.
+        if coma > punto:
+            texto = texto.replace(".", "").replace(",", ".")
+        else:
+            texto = texto.replace(",", "")
+    elif coma >= 0:
+        decimales = len(texto) - coma - 1
+        texto = texto.replace(".", "")
+        texto = texto.replace(",", ".") if decimales in (1, 2) else texto.replace(",", "")
+    elif punto >= 0 and texto.count(".") > 1:
+        partes = texto.split(".")
+        decimal = partes.pop()
+        texto = "".join(partes) + ("." + decimal if len(decimal) in (1, 2) else decimal)
+
+    try:
+        return float(texto)
+    except (TypeError, ValueError):
+        return 0.0
 
 
 # ============================================================
@@ -562,17 +595,9 @@ registros["_fecha"] = convertir_fecha(
     registros["FECHA_FIN"]
 )
 
-registros["_pre"] = (
-    registros["MONTO_PRE_VALORIZADO"]
-    .astype(str)
-    .str.replace(",", "", regex=False)
-    .str.strip()
+registros["_pre"] = registros["MONTO_PRE_VALORIZADO"].apply(
+    convertir_importe
 )
-
-registros["_pre"] = pd.to_numeric(
-    registros["_pre"],
-    errors="coerce"
-).fillna(0)
 
 
 # ============================================================
@@ -770,9 +795,9 @@ if (
         else 0
     )
 
-    cuadrilla = (
-        costo_diario * dias_trans
-    )
+    # Capacidad del gráfico = COSTO CUADRILLA total de BD_CECO para el ITEM.
+    # El costo diario se conserva solo como dato informativo.
+    cuadrilla = costo_cuadrilla_total
 
     pre = data["_pre"].sum()
 
@@ -1034,7 +1059,7 @@ render_html(
 
     <div class="section-subtitle">
         Comparación entre la producción valorizada y la
-        capacidad acumulada de cuadrilla.
+        costo total de cuadrilla registrado en BD_CECO.
     </div>
     """
 )
@@ -1215,10 +1240,12 @@ if not data.empty:
     unidad_data = (
         data.assign(
             _unidad=data["UNIDAD_DE_NEGOCIO"]
+            .fillna("")
             .astype(str)
             .str.strip()
+            .replace("", "(Sin unidad)")
         )
-        .groupby("_unidad", dropna=False)["_pre"]
+        .groupby("_unidad")["_pre"]
         .sum()
         .sort_values(ascending=False)
     )
@@ -1471,8 +1498,10 @@ if not data.empty:
     # --------------------------------------------------------
 
     servicio_agrupado = data.assign(
-        _unidad=data["UNIDAD_DE_NEGOCIO"].astype(str).str.strip(),
-        _servicio=data["SERVICIO_ELECTRICO"].astype(str).str.strip(),
+        _unidad=data["UNIDAD_DE_NEGOCIO"].fillna("").astype(str).str.strip()
+            .replace("", "(Sin unidad)"),
+        _servicio=data["SERVICIO_ELECTRICO"].fillna("").astype(str).str.strip()
+            .replace("", "(Sin servicio)"),
     )
 
     servicio_data = (
