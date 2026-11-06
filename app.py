@@ -4,7 +4,8 @@ import gspread
 import plotly.graph_objects as go
 
 from google.oauth2.service_account import Credentials
-from datetime import date
+from datetime import date, datetime
+from zoneinfo import ZoneInfo
 import calendar
 
 
@@ -446,13 +447,12 @@ def dias_del_mes(anio, mes):
     )[1]
 
 
-# ============================================================
-# DÍAS TRANSCURRIDOS
-# ============================================================
-
 def dias_transcurridos(anio, mes):
 
-    hoy = date.today()
+    # Obtener fecha actual según horario de Perú
+    hoy = datetime.now(
+        ZoneInfo("America/Lima")
+    ).date()
 
     if (
         hoy.year == anio
@@ -464,7 +464,6 @@ def dias_transcurridos(anio, mes):
         anio,
         mes
     )
-
 
 # ============================================================
 # CLASE AVANCE
